@@ -1,0 +1,370 @@
+#!/bin/bash
+
+if [[ $USER != "root" ]]; then
+	echo "Maaf, Anda harus menjalankan ini sebagai root"
+	exit
+fi
+
+# initialisasi var
+export DEBIAN_FRONTEND=noninteractive
+OS=`uname -m`;
+MYIP=$(wget -qO- ipv4.icanhazip.com);
+MYIP2="s/xxxxxxxxx/$MYIP/g";
+ether=`ifconfig | cut -c 1-8 | sort | uniq -u | grep venet0 | grep -v venet0:`
+if [[ $ether = "" ]]; then
+        ether=eth0
+fi
+
+#vps="zvur";
+vps="aneka";
+
+if [[ $vps = "zvur" ]]; then
+	source="http://scripts.gapaiasa.com"
+else
+	source="https://raw.githubusercontent.com/Mochie150297/GanBatte/master/AutoScript"
+fi
+
+# go to root
+cd
+
+# check registered ip
+wget -q -O IP $source/IP.txt
+if ! grep -w -q $MYIP IP; then
+	echo "Maaf, hanya IP yang terdaftar yang bisa menggunakan script ini!"
+	if [[ $vps = "zvur" ]]; then
+		echo ""
+	else
+		echo "Hubungi : Moch Dawn (https://web.facebook.com/profile.php?id=100013679919271)"
+	fi
+	rm -f /root/IP
+	exit
+fi
+
+while :
+do
+	#MYIP=$(ifconfig | grep 'inet addr:' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d: -f2 | awk '{ print $1}' | head -1)
+	#if [ "$MYIP" = "" ]; then
+		#MYIP=$(wget -qO- ipv4.icanhazip.com)
+	#fi
+
+	clear
+
+	echo "--------------- Selamat datang di Server - IP: $MYIP ---------------"
+	echo ""
+	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo )
+	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	freq=$( awk -F: ' /cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo )
+	tram=$( free -m | awk 'NR==2 {print $2}' )
+	swap=$( free -m | awk 'NR==4 {print $2}' )
+	up=$(uptime|awk '{ $1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; print }')
+
+	echo -e "\e[032;1mCPU model:\e[0m $cname"
+	echo -e "\e[032;1mNumber of cores:\e[0m $cores"
+	echo -e "\e[032;1mCPU frequency:\e[0m $freq MHz"
+	echo -e "\e[032;1mTotal amount of ram:\e[0m $tram MB"
+	echo -e "\e[032;1mTotal amount of swap:\e[0m $swap MB"
+	echo -e "\e[032;1mSystem uptime:\e[0m $up"
+	echo -e "\e[032;1mModified By:\e[0m \e[034;1mMoch Dawn DSVP.Net\e[0m"
+	echo -e "\e[032;1mMore Info  :\e[0m \e[034;1m087756981059\e[0m"
+	echo "------------------------------------------------------------------------------"
+	echo "Seputar SSH & OpenVPN"
+	echo -e "\e[031;1m 1\e[0m) \e[032;1mBuat Akun SSH/OpenVPN\e[0m"
+	echo -e "\e[031;1m 2\e[0m) \e[033;1mGenerate Akun SSH/OpenVPN\e[0m"
+	echo -e "\e[031;1m 3\e[0m) \e[034;1mGenerate Akun Trial\e[0m"
+	echo -e "\e[031;1m 4\e[0m) \e[035;1mGanti Password Akun SSH/VPN\e[0m"
+	echo -e "\e[031;1m 5\e[0m) \e[036;1mTambah Masa Aktif Akun SSH/OpenVPN\e[0m"
+	echo -e "\e[031;1m 6\e[0m) \e[037;1mHapus Akun SSH/OpenVPN\e[0m"
+	echo -e "\e[031;1m 7\e[0m) Cek Login Dropbear & OpenSSH"
+	echo -e "\e[031;1m 8\e[0m) \e[032;1mAuto Limit Multi Login\e[0m"
+	echo -e "\e[031;1m 9\e[0m) \e[033;1mMelihat detail user SSH & OpenVPN\e[0m"
+	echo -e "\e[031;1m10\e[0m) \e[034;1mDaftar Akun dan Expire Date\e[0m"
+	echo -e "\e[031;1m11\e[0m) \e[035;1mDelete Akun Expire\e[0m"
+	echo -e "\e[031;1m12\e[0m) \e[036;1mKill Multi Login\e[0m"
+	echo -e "\e[031;1m13\e[0m) \e[037;1mAuto Banned Akun\e[0m"
+	echo -e "\e[031;1m14\e[0m) Unbanned Akun"
+	echo -e "\e[031;1m15\e[0m) \e[032;1mMengunci Akun SSH & OpenVPN\e[0m"
+	echo -e "\e[031;1m16\e[0m) \e[033;1mMembuka user SSH & OpenVPN yang terkunci\e[0m"
+	echo -e "\e[031;1m17\e[0m) \e[034;1mMelihat daftar user yang terkick oleh perintah user-limit\e[0m"
+	echo -e "\e[031;1m18\e[0m) \e[035;1mMelihat daftar user yang terbanned oleh perintah user-ban\e[0m"
+    echo ""
+	echo "Seputar PPTP VPN"
+	echo -e "\e[031;1m19\e[0m) \e[036;1mBuat Akun PPTP VPN\e[0m"
+	echo -e "\e[031;1m20\e[0m) \e[037;1mHapus Akun PPTP VPN\e[0m"
+	echo -e "\e[031;1m21\e[0m) Lihat Detail Akun PPTP VPN"
+	echo -e "\e[031;1m22\e[0m) \e[032;1mCek login PPTP VPN\e[0m"
+	echo -e "\e[031;1m23\e[0m) \e[033;1mLihat Daftar User PPTP VPN\e[0m"
+	echo ""
+	echo "Seputar VPS"
+	echo -e "\e[031;1m24\e[0m) \e[034;1mSet Auto Reboot\e[0m"
+	echo -e "\e[031;1m25\e[0m) \e[035;1mSpeedtest\e[0m"
+	echo -e "\e[031;1m26\e[0m) \e[036;1mMemory Usage\e[0m"
+	echo -e "\e[031;1m27\e[0m) \e[037;1mChange OpenVPN Port\e[0m"
+	echo -e "\e[031;1m28\e[0m) Change Dropbear Port"
+	echo -e "\e[031;1m29\e[0m) \e[032;1mChange Squid Port\e[0m"
+	echo -e "\e[031;1m30\e[0m) \e[033;1mRestart OpenVPN\e[0m"
+	echo -e "\e[031;1m31\e[0m) \e[034;1mRestart Dropbear\e[0m"
+	echo -e "\e[031;1m32\e[0m) \e[035;1mRestart Squid\e[0m"
+	echo -e "\e[031;1m33\e[0m) \e[037;1mRestart Webmin\e[0m"
+	echo -e "\e[031;1m34\e[0m) Benchmark"
+	echo -e "\e[031;1m35\e[0m) \e[032;1mUbah Pasword VPS\e[0m"
+	echo -e "\e[031;1m36\e[0m) \e[033;1mUbah Hostname VPS\e[0m"
+	echo -e "\e[031;1m37\e[0m) \e[034;1mReboot Server\e[0m"
+	echo ""
+	echo "Update Premium Script"
+	echo -e "\e[031;1m38\e[0m) \e[035;1mUpdate Now!\e[0m"
+	echo ""
+	echo -e "\e[031;1m x\e[0m) \e[036;1mExit\e[0m"
+	read -p "Masukkan nomor pilihan anda, kemudian tekan tombol ENTER: " option1
+	case $option1 in
+        1)  
+        clear
+        buatakun
+		exit
+        ;;
+        2)  
+        clear
+        generate
+		exit
+        ;;
+        3)	
+        clear
+        trial
+		exit
+		;;	
+        4)
+        clear
+        userpass
+		exit
+        ;;    
+        5)
+        clear
+        userrenew
+		exit
+		;;
+        6)
+        clear
+		userdelete
+		exit
+        ;;		
+		7)
+		clear
+	    userlogin
+		exit
+		;;
+		8)
+		clear
+		autolimit
+		exit
+		;;	
+		9)
+		clear
+        userdetail
+		exit
+        ;;
+		10)
+		clear
+        user-list
+		exit
+        ;;
+        11)
+        clear
+        deleteuserexpire
+		exit
+	    ;;
+	    12)
+	    clear
+	    #!/bin/bash
+        # Created by Moch Dawn DSVP.Net
+        # Dilarang Keras Mengambil/mencuplik/mengcopy sebagian atau seluruh script ini.
+        # Hak Cipta Moch Dawn DSVP.Net (Dilindungi Undang-Undang nomor 19 Tahun 2002)
+        red='\e[1;31m'
+        green='\e[0;32m'
+        NC='\e[0m'
+        echo "Connecting to Server..."
+        sleep 0.2
+        echo "Checking Permision..."
+        sleep 0.3
+        echo -e "${green}Permission Accepted...${NC}"
+        sleep 1
+        echo""
+	    echo "    AUTO KILL MULTI LOGIN    "    
+	    echo "-----------------------------"
+        autokilluser
+        echo "-----------------------------"
+        echo "AUTO KILL MULTI LOGIN SELESAI"
+		exit
+        ;;
+        13)
+        clear
+        userban
+		exit
+	    ;;
+	    14)
+        clear
+        userunban
+		exit
+	    ;;
+	    15)
+	    clear
+        userlock
+		exit
+		;;
+		16)
+		clear
+        userunlock
+		exit
+		;;
+		17)
+		clear
+		loglimit
+		exit
+		;;
+		18)
+		clear
+        logban
+		exit
+		;;
+	    19)
+	    clear
+        useraddpptp
+		exit
+		;;
+		20)
+		clear
+        userdeletepptp
+		exit
+		;;
+	    21)
+	    clear
+        detailpptp
+		exit
+        ;;
+        22)
+        clear
+        userloginpptp
+		exit
+		;;
+		23)
+		clear
+        alluserpptp
+		exit
+		;;
+	    24)
+	    clear
+        autoreboot
+		exit
+        ;;
+	    25)
+	    clear
+	    #!/bin/bash
+        red='\e[1;31m'
+        green='\e[0;32m'
+        blue='\e[1;34m'
+        NC='\e[0m'
+        echo "Connecting to Server..."
+        sleep 0.2
+        echo "Checking Permision..."
+        sleep 0.3
+        echo -e "${green}Permission Accepted...${NC}"
+        sleep 1
+        echo""
+        echo "Speed Tes Server"
+        ./speedtest.py --share
+        echo "Hasil Speed test Script by Moch Dawn DSVP.Net"
+		exit
+        ;;
+        26)
+        clear
+		ps-m
+		exit
+        ;;
+		27)	
+		clear
+        echo "Masukan Port OpenVPN yang diinginkan:"
+        read -p "Port: " -e -i 1194 PORT
+        sed -i "s/port [0-9]*/port $PORT/" /etc/openvpn/1194.conf
+        service openvpn restart
+        echo "OpenVPN Updated : Port $PORT"
+		exit
+		;;
+		28)	
+		clear
+        echo "Masukan Port Dropbear yang diinginkan:"
+        read -p "Port: " -e -i 443 PORT
+        sed -i "s/DROPBEAR_PORT=[0-9]*/DROPBEAR_PORT=$PORT/" /etc/default/dropbear
+        service dropbear restart
+        echo "Dropbear Updated : Port $PORT"
+		exit
+		;;
+        29)	
+        clear
+        echo "Masukan Port Squid yang diinginkan:"
+        read -p "Port: " -e -i 8080 PORT
+        sed -i "s/http_port [0-9]*/http_port $PORT/" /etc/squid3/squid.conf
+        service squid3 restart
+        echo "echo "Squid3 Updated : Port $PORT""
+		exit
+		;;			
+        30)	
+        clear
+        echo "Service Openvpn restart .................tunggu sebentar"
+        service openvpn restart
+        echo "Restart OpenVPN selesai Script By Moch Dawn DSVP.Net"
+		exit
+		;;	
+		31)
+        clear
+        echo "Servie dropbear restart .................tunggu sebentar"
+        service dropbear restart
+        echo "Restart Dropbear selesai Script By Moch Dawn DSVP.Net"
+		exit
+        ;;
+		32) 
+		clear
+		echo "Service Squid restart .................tunggu sebentar"
+		service squid3 restart
+		echo "Restart OpenVPN selesai Script By Moch Dawn DSVP.Net"
+		exit
+		;;
+		33)
+		clear
+		/etc/init.d/webmin restart
+		echo "Restart Webmin selesai Script By Moch Dawn DSVP.Net"
+		exit
+		    ;;
+		34)
+		clear
+        wget freevps.us/downloads/bench.sh -O - -o /dev/null|bash
+		exit
+        ;;
+        35)
+		clear
+		echo "Masukan Password VPS, yang mau diganti :"
+		passwd
+		exit
+		;;	
+		36)
+		clear
+		echo "Masukan HOSTNAME VPS, yang mau diganti :"
+        echo "  contoh : " hostname dsvp.net 
+		exit
+        ;;
+		37)
+		clear
+		reboot
+		exit
+        ;;
+        38)
+        clear
+		update
+		exit
+		;;
+        x)
+        clear
+		exit
+		;;
+    esac
+done
+
+cd ~/
+rm -f /root/IP
